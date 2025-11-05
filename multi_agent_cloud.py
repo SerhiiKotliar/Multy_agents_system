@@ -1,99 +1,103 @@
-import os
-import json
 import re
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from datetime import datetime, timedelta
 import uuid
 import requests
-import subprocess
 import time
+import os
 
 
-class OllamaClient:
-    """Клієнт для роботи з локальною моделлю через Ollama"""
+class CloudAIClient:
+    """Клієнт для роботи з хмарними моделями через Ollama"""
 
-    def __init__(self, base_url: str = "http://localhost:11434", model: str = "llama3:8b"):
+    def __init__(self, base_url: str = "http://localhost:11434"):
         self.base_url = base_url
-        self.model = model
+        self.available_models = []
+        self.selected_model = None
         self.available = False
         self._initialize_connection()
 
     def _initialize_connection(self):
-        """Ініціалізація з'єднання з автоматичним запуском Ollama"""
-        print("🔍 Перевірка доступності Ollama...")
+        """Ініціалізація з'єднання з Ollama"""
+        print("🔍 Перевірка доступності Ollama та хмарних моделей...")
 
-        for url in ["http://localhost:11434", "http://127.0.0.1:11434"]:
-            self.base_url = url
-            if self._check_connection():
-                self.available = True
-                print(f"✅ Ollama знайдено за адресою: {url}")
-                return
-
-        print("❌ Ollama не знайдено.")
+        if self._check_connection():
+            self.available = True
+            print(f"✅ Ollama знайдено за адресою: {self.base_url}")
+            self._select_cloud_model()
+        else:
+            print("❌ Ollama не знайдено.")
 
     def _check_connection(self) -> bool:
         """Перевірка з'єднання з Ollama"""
         try:
-            response = requests.get(f"{self.base_url}/api/tags", timeout=5)
+            response = requests.get(f"{self.base_url}/api/tags", timeout=10)
             if response.status_code == 200:
                 models = response.json().get('models', [])
-                model_names = [model['name'] for model in models]
-                print(f"📋 Доступні моделі: {model_names}")
+                self.available_models = [model['name'] for model in models]
+                print(f"📋 Доступні моделі: {self.available_models}")
+                return True
+        except Exception as e:
+            print(f"⚠️ Помилка підключення: {e}")
+        return False
 
-                # Пріоритет менших моделей для швидкості
-                preferred_models = [
-                    'llama3.2:1b', 'llama3.2:3b', 'llama3.2',
-                    'llama3:8b', 'llama3:latest', 'llama3',
-                    'gemma3:4b', 'gemma3:latest'
-                ]
+    def _select_cloud_model(self):
+        """Вибір хмарної моделі з пріоритетом"""
+        cloud_models = [
+            'minimax-m2:cloud',
+            'deepseek-v3.1:671b-cloud',
+            'deepseek-coder-v2:16b-cloud',
+            'qwen2.5:72b-cloud',
+            'llama3.1:70b-cloud'
+        ]
 
-                for preferred in preferred_models:
-                    for available_model in model_names:
-                        if preferred in available_model:
-                            self.model = available_model
-                            print(f"🎯 Використовуємо модель: {self.model}")
-                            return True
+        for cloud_model in cloud_models:
+            if cloud_model in self.available_models:
+                self.selected_model = cloud_model
+                print(f"🎯 Використовуємо хмарну модель: {self.selected_model}")
+                return
 
-                # Якщо не знайшли пріоритетні, беремо першу доступну
-                if model_names:
-                    self.model = model_names[0]
-                    print(f"🎯 Використовуємо першу доступну модель: {self.model}")
-                    return True
+        # Якщо хмарних моделей немає, шукаємо локальні
+        local_models = ['llama3:8b', 'llama3.2:3b', 'gemma2:2b']
+        for local_model in local_models:
+            for available_model in self.available_models:
+                if local_model in available_model:
+                    self.selected_model = available_model
+                    print(f"🎯 Використовуємо локальну модель: {self.selected_model}")
+                    return
 
-                return False
-        except Exception:
-            return False
+        # Якщо нічого не знайдено, беремо першу доступну
+        if self.available_models:
+            self.selected_model = self.available_models[0]
+            print(f"🎯 Використовуємо першу доступну модель: {self.selected_model}")
 
     def generate_response(self, messages: List[Dict], temperature: float = 0.7,
-                          max_tokens: int = 500) -> str:  # Зменшимо токени
-        """Генерація відповіді через Ollama API"""
-        if not self.available:
-            return "❌ Ollama не доступна."
+                          max_tokens: int = 1000) -> str:
+        """Генерація відповіді через хмарну модель"""
+        if not self.available or not self.selected_model:
+            return "❌ Жодна модель не доступна."
 
         try:
-            prompt = self._format_messages_optimized(messages)
+            prompt = self._format_messages_for_cloud(messages)
 
             payload = {
-                "model": self.model,
+                "model": self.selected_model,
                 "prompt": prompt,
                 "stream": False,
                 "options": {
                     "temperature": temperature,
                     "num_predict": max_tokens,
-                    "top_k": 20,  # Обмежуємо для швидкості
-                    "top_p": 0.9,
-                    "repeat_penalty": 1.1
                 }
             }
 
-            print(f"🔄 Запит до {self.model}...")
+            print(f"🔄 Запит до {self.selected_model}...")
             start_time = time.time()
 
             response = requests.post(
                 f"{self.base_url}/api/generate",
                 json=payload,
-                timeout=60  # Зменшимо таймаут
+                timeout=120  # Більший таймаут для хмарних моделей
             )
 
             elapsed_time = time.time() - start_time
@@ -107,29 +111,55 @@ class OllamaClient:
                 else:
                     return "❌ Пуста відповідь від моделі."
             else:
-                return f"❌ Помилка API: {response.status_code}"
+                error_msg = f"❌ Помилка API: {response.status_code}"
+                try:
+                    error_detail = response.json().get('error', '')
+                    if error_detail:
+                        error_msg += f" - {error_detail}"
+                except:
+                    pass
+                return error_msg
 
         except requests.exceptions.Timeout:
-            return "❌ Таймаут. Спробуйте меншу модель або простіше питання."
+            return "❌ Таймаут запиту. Хмарна модель може бути перевантажена."
         except Exception as e:
             return f"❌ Помилка: {str(e)}"
 
-    def _format_messages_optimized(self, messages: List[Dict]) -> str:
-        """Оптимізований формат для швидкої відповіді"""
-        system_msg = ""
-        user_msg = ""
+    def _format_messages_for_cloud(self, messages: List[Dict]) -> str:
+        """Форматує повідомлення для хмарних моделей"""
+        formatted_text = ""
 
         for message in messages:
-            if message["role"] == "system":
-                system_msg = message["content"][:500]  # Обмежуємо системні повідомлення
-            elif message["role"] == "user":
-                user_msg = message["content"]
+            role = message["role"]
+            content = message["content"]
 
-        # Простий формат для швидкої обробки
-        if system_msg:
-            return f"Інструкція: {system_msg}\n\nПитання: {user_msg}\n\nВідповідь:"
+            if role == "system":
+                formatted_text += f"### Системна інструкція:\n{content}\n\n"
+            elif role == "user":
+                formatted_text += f"### Запит користувача:\n{content}\n\n"
+            elif role == "assistant":
+                formatted_text += f"### Попередня відповідь:\n{content}\n\n"
+
+        formatted_text += "### Поточна відповідь:\n"
+        return formatted_text
+
+    def switch_model(self, model_name: str) -> bool:
+        """Перемикання на іншу модель"""
+        if model_name in self.available_models:
+            self.selected_model = model_name
+            print(f"🔄 Переключено на модель: {model_name}")
+            return True
         else:
-            return f"Питання: {user_msg}\n\nВідповідь:"
+            print(f"❌ Модель {model_name} не знайдена")
+            return False
+
+    def get_available_cloud_models(self) -> List[str]:
+        """Отримати список доступних хмарних моделей"""
+        cloud_models = []
+        for model in self.available_models:
+            if ':cloud' in model or 'minimax' in model or 'deepseek' in model:
+                cloud_models.append(model)
+        return cloud_models
 
 
 class FastLocalClient:
@@ -174,7 +204,7 @@ class FastLocalClient:
         billing_words = ['рахунок', 'відшкодування', 'оплата', 'invoice', 'payment', 'refund']
 
         if any(word in question for word in tech_words):
-            return "🤖 **Технічна підтримка:**\n\nДля детальних технічних консультацій рекомендується використовувати менші AI моделі або звернутися до технічної документації."
+            return "🤖 **Технічна підтримка:**\n\nДля детальних технічних консультацій використовується хмарна AI модель."
         elif any(word in question for word in billing_words):
             return "💼 **Фінансові питання:**\n\nДля обробки фінансових запитів використовуйте структуровані команди: 'рахунок', 'відшкодування', 'політика'."
         else:
@@ -182,12 +212,12 @@ class FastLocalClient:
 
 
 class HybridAIClient:
-    """Гібридний клієнт з пріоритетом на швидкість"""
+    """Гібридний клієнт з пріоритетом на хмарні моделі"""
 
     def __init__(self):
         print("🔄 Ініціалізація AI клієнтів...")
 
-        self.ollama_client = OllamaClient()
+        self.cloud_client = CloudAIClient()
         self.fast_client = FastLocalClient()
 
         self._print_status()
@@ -195,9 +225,15 @@ class HybridAIClient:
     def _print_status(self):
         """Вивід статусу"""
         print("\n📊 Статус AI клієнтів:")
-        print(f"   • Ollama: {'✅' if self.ollama_client.available else '❌'}")
-        if self.ollama_client.available:
-            print(f"     Модель: {self.ollama_client.model}")
+        print(f"   • Хмарні моделі: {'✅' if self.cloud_client.available else '❌'}")
+        if self.cloud_client.available and self.cloud_client.selected_model:
+            model_type = "🌩️ Хмарна" if ":cloud" in self.cloud_client.selected_model else "💻 Локальна"
+            print(f"     Модель: {self.cloud_client.selected_model} ({model_type})")
+
+            cloud_models = self.cloud_client.get_available_cloud_models()
+            if cloud_models:
+                print(f"     Доступні хмарні моделі: {', '.join(cloud_models)}")
+
         print(f"   • Швидкий режим: ✅")
 
     def generate_response(self, messages: List[Dict], **kwargs) -> str:
@@ -207,18 +243,31 @@ class HybridAIClient:
         if not fast_response.startswith("❓"):
             return fast_response
 
-        # Потім Ollama якщо доступна
-        if self.ollama_client.available:
-            print("🔄 Використання Ollama для детальної відповіді...")
-            ollama_response = self.ollama_client.generate_response(messages, **kwargs)
-            if not ollama_response.startswith("❌"):
-                return f"🤖 **Детальна відповідь (AI):**\n\n{ollama_response}"
+        # Потім хмарна модель якщо доступна
+        if self.cloud_client.available:
+            print(f"🔄 Використання {self.cloud_client.selected_model} для детальної відповіді...")
+            cloud_response = self.cloud_client.generate_response(messages, **kwargs)
+            if not cloud_response.startswith("❌"):
+                model_type = "хмарної моделі" if ":cloud" in self.cloud_client.selected_model else "локальної моделі"
+                return f"🤖 **Детальна відповідь ({model_type}):**\n\n{cloud_response}"
 
         return fast_response
 
+    def switch_model(self, model_name: str) -> bool:
+        """Перемикання моделі"""
+        if self.cloud_client.available:
+            return self.cloud_client.switch_model(model_name)
+        return False
+
+    def get_available_models(self) -> List[str]:
+        """Отримати список доступних моделей"""
+        if self.cloud_client.available:
+            return self.cloud_client.available_models
+        return []
+
 
 # Решта класів залишаються незмінними (TechnicalAgentA, BillingAgentB, AgentDispatcher)
-# [Вставте тут TechnicalAgentA, BillingAgentB, AgentDispatcher з попереднього коду]
+# [Тут йде той самий код TechnicalAgentA, BillingAgentB, AgentDispatcher з попередньої версії]
 
 class TechnicalAgentA:
     def __init__(self, docs_directory: str = "./docs", ai_client=None):
@@ -249,7 +298,7 @@ class TechnicalAgentA:
                     'section_id': i + 1
                 })
 
-    def search_documents(self, query: str, top_k: int = 2) -> List[Dict]:  # Зменшимо кількість
+    def search_documents(self, query: str, top_k: int = 2) -> List[Dict]:
         """Пошук релевантних документів"""
         if not self.documents:
             return []
@@ -270,7 +319,7 @@ class TechnicalAgentA:
 
             if score > 0:
                 scored_docs.append({
-                    'content': doc['content'][:200],  # Обмежуємо довжину
+                    'content': doc['content'][:200],
                     'source': doc['source'],
                     'section_id': doc['section_id'],
                     'score': score
@@ -299,7 +348,7 @@ class TechnicalAgentA:
             }
         ]
 
-        ai_response = self.ai_client.generate_response(messages, temperature=0.3, max_tokens=300)
+        ai_response = self.ai_client.generate_response(messages, temperature=0.3, max_tokens=1000)
         return f"{self.agent_name}:\n{ai_response}"
 
 
@@ -336,7 +385,7 @@ class BillingAgentB:
             }
         ]
 
-        ai_response = self.ai_client.generate_response(messages, temperature=0.5, max_tokens=300)
+        ai_response = self.ai_client.generate_response(messages, temperature=0.5, max_tokens=800)
         return f"{self.agent_name}:\n{ai_response}"
 
     def _try_structured_handling(self, question: str) -> Optional[str]:
@@ -466,14 +515,19 @@ class AgentDispatcher:
 
 
 def main():
-    print("🚀 Запуск оптимізованої системи...")
+    print("🚀 Запуск системи з підтримкою хмарних моделей...")
     print("=" * 50)
 
     ai_client = HybridAIClient()
     dispatcher = AgentDispatcher(ai_client)
 
     print("\n💬 Система готова до роботи!")
-    print("Доступні команди: статистика, історія, clear, quit, статус")
+    print("Доступні команди:")
+    print("  - статистика - показати статистику розмови")
+    print("  - моделі - показати доступні моделі")
+    print("  - перемкнути <назва> - змінити модель")
+    print("  - clear - очистити історію")
+    print("  - quit - вихід")
     print("\nЗадавайте ваші питання:")
 
     while True:
@@ -486,6 +540,26 @@ def main():
             elif user_input.lower() == 'статистика':
                 stats = dispatcher.get_conversation_stats()
                 print(f"\n📊 Статистика: {stats['total_messages']} повідомлень")
+                print(f"   • Технічні: {stats['agent_usage']['technical']}")
+                print(f"   • Фінансові: {stats['agent_usage']['billing']}")
+                continue
+            elif user_input.lower() == 'моделі':
+                models = ai_client.get_available_models()
+                if models:
+                    print(f"\n📋 Доступні моделі:")
+                    for model in models:
+                        model_type = "🌩️ Хмарна" if ":cloud" in model else "💻 Локальна"
+                        print(f"   • {model} ({model_type})")
+                else:
+                    print("❌ Моделі не знайдено")
+                continue
+            elif user_input.lower().startswith('перемкнути'):
+                model_name = user_input[10:].strip()
+                if model_name:
+                    if ai_client.switch_model(model_name):
+                        print(f"✅ Переключено на модель: {model_name}")
+                    else:
+                        print(f"❌ Не вдалося перемкнути на модель: {model_name}")
                 continue
             elif user_input.lower() == 'clear':
                 dispatcher.conversation_history = []
