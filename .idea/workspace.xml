@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents 3" />
+    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents 4">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,8 +30,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/SerhiiKotliar/Multy_agents_system.git&quot;,
-    &quot;accountId&quot;: &quot;a8fbca1c-9f4d-42a0-a9bb-cdf60ab978f3&quot;
+    &quot;url&quot;: &quot;git@github.com:SerhiiKotliar/Multy_agents_system.git&quot;,
+    &quot;accountId&quot;: &quot;70bd87dc-dca3-442c-9a0f-184e2ceb687a&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -84,7 +86,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-b3ae9b5d7125-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.439" />
+        <option value="bundled-python-sdk-164cda30dcd9-0af03a5fa574-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26830.99" />
       </set>
     </attachedChunks>
   </component>
@@ -120,13 +122,22 @@
       <option name="project" value="LOCAL" />
       <updated>1762258338710</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="multi agents 4">
+      <option name="closed" value="true" />
+      <created>1762274628669</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1762274628669</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="multi agents 1" />
     <MESSAGE value="multi agents 2" />
     <MESSAGE value="multi agents 3" />
-    <option name="LAST_COMMIT_MESSAGE" value="multi agents 3" />
+    <MESSAGE value="multi agents 4" />
+    <option name="LAST_COMMIT_MESSAGE" value="multi agents 4" />
   </component>
 </project>
