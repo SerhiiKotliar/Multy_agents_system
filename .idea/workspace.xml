@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents 3">
-      <change beforePath="$PROJECT_DIR$/multi_agent_cloud.py" beforeDir="false" afterPath="$PROJECT_DIR$/multi_agent_cloud.py" afterDir="false" />
-    </list>
+    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents 5" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -122,13 +120,22 @@
       <option name="project" value="LOCAL" />
       <updated>1762258338710</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="multi agents 5">
+      <option name="closed" value="true" />
+      <created>1762363572649</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1762363572649</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="multi agents 1" />
     <MESSAGE value="multi agents 2" />
     <MESSAGE value="multi agents 3" />
-    <option name="LAST_COMMIT_MESSAGE" value="multi agents 3" />
+    <MESSAGE value="multi agents 5" />
+    <option name="LAST_COMMIT_MESSAGE" value="multi agents 5" />
   </component>
 </project>
