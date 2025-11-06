@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents working 1">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents working 2" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,6 +58,11 @@
     "last_opened_file_path": "G:/Visual Studio 2010/Projects/Python/Multy_agents_system"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="G:\Visual Studio 2010\Projects\Python\Multy_agents_system" />
+    </key>
+  </component>
   <component name="RunManager" selected="Python.multi_agent_cloud">
     <configuration name="multi_agent_cloud" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Multy_agents_system" />
@@ -275,7 +277,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762416624237</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="multi agents working 2">
+      <option name="closed" value="true" />
+      <created>1762427610918</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1762427610918</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -286,6 +296,7 @@
     <MESSAGE value="multi agents 5" />
     <MESSAGE value="multi agents working" />
     <MESSAGE value="multi agents working 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="multi agents working 1" />
+    <MESSAGE value="multi agents working 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="multi agents working 2" />
   </component>
 </project>
