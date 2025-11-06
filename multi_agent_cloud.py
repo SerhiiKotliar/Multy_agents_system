@@ -265,11 +265,8 @@ class HybridAIClient:
             return self.cloud_client.available_models
         return []
 
-
-# Решта класів залишаються незмінними (TechnicalAgentA, BillingAgentB, AgentDispatcher)
-# [Тут йде той самий код TechnicalAgentA, BillingAgentB, AgentDispatcher з попередньої версії]
-
 class TechnicalAgentA:
+    """Технічний агент"""
     def __init__(self, docs_directory: str = "./docs", ai_client=None):
         self.docs_directory = Path(docs_directory)
         self.documents = []
@@ -353,6 +350,7 @@ class TechnicalAgentA:
 
 
 class BillingAgentB:
+    """Фінансовий агент"""
     def __init__(self, ai_client=None):
         self.agent_name = "💼 Агент Б (Спеціаліст з рахунків)"
         self.ai_client = ai_client
@@ -402,6 +400,7 @@ class BillingAgentB:
         return None
 
     def handle_refund_request(self, question: str) -> str:
+        """запит на відшкодування"""
         request_id = f"REF-{uuid.uuid4().hex[:6].upper()}"
         refund_type = "standard"
 
@@ -430,6 +429,7 @@ class BillingAgentB:
 3. Чекайте підтвердження"""
 
     def handle_invoice_request(self, question: str) -> str:
+        """запит на виставлення рахунку"""
         invoice_id = f"INV-{uuid.uuid4().hex[:6].upper()}"
         self.invoices[invoice_id] = {
             "amount": "1,000.00",
@@ -446,6 +446,7 @@ class BillingAgentB:
 • Термін: 30 днів"""
 
     def explain_refund_policy(self) -> str:
+        """пояснення політики відшкодувань"""
         response = f"{self.agent_name}:\n📋 **Політика відшкодувань**\n\n"
         for policy_type, details in self.refund_policy.items():
             response += f"**{details['description']}:** {details['days']} днів"
@@ -456,6 +457,7 @@ class BillingAgentB:
 
 
 class AgentDispatcher:
+    """агент диспетчера"""
     def __init__(self, ai_client=None):
         self.agent_a = TechnicalAgentA("./docs", ai_client)
         self.agent_b = BillingAgentB(ai_client)
@@ -463,6 +465,7 @@ class AgentDispatcher:
         self.conversation_history = []
 
     def classify_intent(self, question: str) -> Tuple[str, float]:
+        """класифікація повідомлень"""
         tech_keywords = ['компьютер', 'ноутбук', 'мережа', 'інтернет', 'wi-fi', 'ip', 'mac', 'драйвер', 'software',
                          'hardware']
         billing_keywords = ['рахунок', 'інвойс', 'оплата', 'відшкодування', 'рефанд', 'гроші', 'кошти', 'ціна']
@@ -479,6 +482,7 @@ class AgentDispatcher:
             return "technical", 0.5
 
     def handle_message(self, user_message: str) -> str:
+        """обробка повідомлення"""
         if not user_message.strip():
             return "Будь ласка, введіть ваше питання."
 
@@ -502,6 +506,7 @@ class AgentDispatcher:
         return response
 
     def get_conversation_stats(self) -> Dict:
+        """отримання статистики"""
         agent_counts = {"technical": 0, "billing": 0}
         for entry in self.conversation_history:
             if entry["agent"] in agent_counts:

@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents cloud working">
+    <list default="true" id="25b5b1fb-a3a3-47aa-8c58-0095541f3bcb" name="Changes" comment="multi agents working">
+      <change afterPath="$PROJECT_DIR$/multi_agent_cloud.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/multi_agent_system.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,20 +47,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.multi_agent_cloud.executor&quot;: &quot;Run&quot;,
-    &quot;Python.multi_agent_system.executor&quot;: &quot;Run&quot;,
-    &quot;Python.multi_agent_system_2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.multi_agent_system_3.executor&quot;: &quot;Run&quot;,
-    &quot;Python.multi_agent_system_new.executor&quot;: &quot;Run&quot;,
-    &quot;Python.multi_agents_system_new_1.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.multi_agent_cloud.executor": "Run",
+    "Python.multi_agent_system.executor": "Run",
+    "Python.multi_agent_system_2.executor": "Run",
+    "Python.multi_agent_system_3.executor": "Run",
+    "Python.multi_agent_system_new.executor": "Run",
+    "Python.multi_agents_system_new_1.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Python.multi_agent_cloud">
     <configuration name="multi_agent_cloud" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Multy_agents_system" />
@@ -265,15 +267,7 @@
       <option name="project" value="LOCAL" />
       <updated>1762336350419</updated>
     </task>
-    <task id="LOCAL-00007" summary="multi agents cloud working">
-      <option name="closed" value="true" />
-      <created>1762347528423</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1762347528423</updated>
-    </task>
-    <option name="localTasksCounter" value="8" />
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -283,7 +277,6 @@
     <MESSAGE value="multi agents 4" />
     <MESSAGE value="multi agents 5" />
     <MESSAGE value="multi agents working" />
-    <MESSAGE value="multi agents cloud working" />
-    <option name="LAST_COMMIT_MESSAGE" value="multi agents cloud working" />
+    <option name="LAST_COMMIT_MESSAGE" value="multi agents working" />
   </component>
 </project>
